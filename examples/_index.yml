@@ -1,0 +1,42 @@
+generated: '2026-07-27'
+method: searched
+source: https://status.utilita.co.uk/api/v2/
+description: >-
+  Verbatim response snapshots captured by anonymous GET against the Utilita Status API on
+  2026-07-27. Nothing has been edited, redacted or synthesised — these are the live bodies.
+api: Utilita Status API
+spec: openapi/utilita-status-openapi.yml
+examples:
+- file: utilita-status-summary.json
+  operation: getSummary
+  url: https://status.utilita.co.uk/api/v2/summary.json
+  status: 200
+- file: utilita-status-status.json
+  operation: getStatus
+  url: https://status.utilita.co.uk/api/v2/status.json
+  status: 200
+- file: utilita-status-components.json
+  operation: getComponents
+  url: https://status.utilita.co.uk/api/v2/components.json
+  status: 200
+- file: utilita-status-unresolved-incidents.json
+  operation: getUnresolvedIncidents
+  url: https://status.utilita.co.uk/api/v2/incidents/unresolved.json
+  status: 200
+- file: utilita-status-upcoming-maintenances.json
+  operation: getUpcomingScheduledMaintenances
+  url: https://status.utilita.co.uk/api/v2/scheduled-maintenances/upcoming.json
+  status: 200
+- file: utilita-status-active-maintenances.json
+  operation: getActiveScheduledMaintenances
+  url: https://status.utilita.co.uk/api/v2/scheduled-maintenances/active.json
+  status: 200
+not_stored:
+- operation: getIncidents
+  url: https://status.utilita.co.uk/api/v2/incidents.json
+  status: 200
+  reason: ~208 KB of incident history; shape identical to the unresolved-incidents example.
+- operation: getScheduledMaintenances
+  url: https://status.utilita.co.uk/api/v2/scheduled-maintenances.json
+  status: 200
+  reason: ~467 KB of maintenance history; shape identical to the upcoming-maintenances example.

@@ -1,0 +1,55 @@
+generated: '2026-07-27'
+method: searched
+source: anonymous HTTPS GET, desktop user-agent, redirects followed
+description: >-
+  Full /.well-known/ discovery probe across every Utilita host in this repo. One document exists —
+  and it belongs to Atlassian, not to Utilita. Recorded honestly: no WellKnown, APICatalog or
+  SecurityTxt pointer is wired into apis.yml, because Utilita itself publishes no
+  well-known discovery surface.
+probed: '2026-07-27'
+hosts:
+- host: https://utilita.co.uk
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /llms.txt, status: 404}
+  - {path: /ai.txt, status: 404}
+- host: https://my.utilita.co.uk
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /llms.txt, status: 404}
+- host: https://status.utilita.co.uk
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: utilita-status-security.txt
+    content_type: text/plain
+    owner: Atlassian
+    canonical: https://www.atlassian.com/.well-known/security.txt
+    note: >-
+      RFC 9116 file served by the Atlassian Statuspage platform that hosts status.utilita.co.uk.
+      Its Contact/Policy point at Atlassian's vulnerability report programme and its Canonical
+      field declares atlassian.com, so it is NOT a Utilita disclosure policy and is not wired as
+      one. Saved verbatim because it is what a client resolving RFC 9116 for that host receives.
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+- host: https://uportal.utilita.co.uk
+  documents:
+  - {path: /.well-known/openid-configuration, status: 404}
+- host: https://whqapi.utilita.co.uk
+  documents:
+  - {path: /.well-known/openid-configuration, status: 404}
+- host: https://join.utilita.co.uk
+  documents:
+  - {path: /.well-known/openid-configuration, status: 403, note: Imperva WAF blocks anonymous automated requests}

@@ -1,0 +1,45 @@
+generated: '2026-07-27'
+method: searched
+source: https://status.utilita.co.uk/ + https://status.utilita.co.uk/api
+versioning:
+  scheme: uri-path
+  current: v2
+  docs: https://status.utilita.co.uk/api
+  detail: >-
+    The only public Utilita API is versioned in the path (/api/v2/). Utilita publishes no versioning
+    policy of its own — the version is set by the Atlassian Statuspage platform.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  detail: >-
+    No deprecation policy, no RFC 8594 Sunset/Deprecation header support, and no announced
+    end-of-life process was found. No `Deprecation` pointer is wired because none exists.
+deprecated_operations: []
+sla:
+  url: null
+  uptime_target: null
+  detail: >-
+    No published SLA or uptime commitment for the API. Utilita's customer-facing service standards
+    are governed by its Ofgem supply licence and its domestic terms and conditions, not by an API SLA.
+status_page:
+  url: https://status.utilita.co.uk/
+  platform: Atlassian Statuspage
+  page_id: lgm23svnh0xr
+  api: https://status.utilita.co.uk/api/v2/summary.json
+  history: https://status.utilita.co.uk/history
+  feeds: [https://status.utilita.co.uk/history.rss, https://status.utilita.co.uk/history.atom]
+  incident_history_observed: 50 incidents returned by /api/v2/incidents.json on 2026-07-27
+  components_tracked: 21
+  evidence: {http_status: 200, probed: '2026-07-27'}
+  detail: >-
+    A genuinely maintained status page: 21 components across Payments, My Utilita, Websites, Contact
+    Centre, Smart Meter Installations and the Smart Metering Network, with an active incident and
+    scheduled-maintenance history and subscriber notifications.
+change_log:
+  url: null
+  published: false
+  detail: >-
+    Utilita publishes no API changelog or release notes. The status page incident/maintenance history
+    is an operational record, not a change log, and is not wired as one.

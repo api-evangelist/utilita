@@ -1,0 +1,100 @@
+generated: '2026-07-27'
+method: derived
+source: openapi/utilita-status-openapi.yml (schemas + observed payloads in examples/)
+scope: Entity-relationship model of the Utilita Status API. Derived from real response bodies, not from documentation.
+entities:
+- name: Page
+  description: The Utilita status page itself; every response embeds it.
+  identifier: id
+  observed_id: lgm23svnh0xr
+  fields: [id, name, url, time_zone, updated_at]
+- name: StatusIndicator
+  description: Rolled-up severity for the whole page.
+  fields: [indicator, description]
+  enum_observed:
+    indicator: [none, minor, major, critical, maintenance]
+- name: Component
+  description: A single Utilita service tracked on the page (a meter class, payment channel, portal, website or contact channel).
+  identifier: id
+  fields: [id, name, description, status, created_at, updated_at, position, page_id, group, group_id, only_show_if_degraded, showcase, start_date]
+  enum_observed:
+    status: [operational, degraded_performance, partial_outage, major_outage, under_maintenance]
+  instances_observed: 21
+- name: Incident
+  description: An unplanned service incident.
+  identifier: id
+  fields: [id, name, status, impact, created_at, updated_at, monitoring_at, resolved_at, started_at, shortlink, page_id]
+  enum_observed:
+    status: [investigating, identified, monitoring, resolved, postmortem]
+    impact: [none, minor, major, critical]
+- name: IncidentUpdate
+  description: One dated entry in an incident's timeline.
+  identifier: id
+  fields: [id, status, body, incident_id, created_at, updated_at, display_at, deliver_notifications, custom_tweet, tweet_id]
+- name: AffectedComponent
+  description: The component status transition recorded on an incident update.
+  fields: [code, name, old_status, new_status]
+- name: ScheduledMaintenance
+  description: A planned maintenance window; structurally an incident with a schedule.
+  identifier: id
+  fields: [id, name, status, impact, scheduled_for, scheduled_until, created_at, updated_at, monitoring_at, resolved_at, started_at, shortlink, page_id]
+  enum_observed:
+    status: [scheduled, in_progress, verifying, completed]
+relationships:
+- from: Page
+  to: Component
+  type: has_many
+  via: page_id
+- from: Page
+  to: Incident
+  type: has_many
+  via: page_id
+- from: Page
+  to: ScheduledMaintenance
+  type: has_many
+  via: page_id
+- from: Component
+  to: Component
+  type: has_many
+  via: group_id
+  note: >-
+    Group components (group true) parent their children. Observed groups —
+    Payments, My Utilita, Websites, Contact Centre.
+- from: Incident
+  to: IncidentUpdate
+  type: has_many
+  via: incident_updates[] (embedded, incident_id back-reference)
+- from: Incident
+  to: Component
+  type: has_many
+  via: components[] (embedded)
+- from: IncidentUpdate
+  to: AffectedComponent
+  type: has_many
+  via: affected_components[] (embedded, code = Component.id)
+- from: ScheduledMaintenance
+  to: IncidentUpdate
+  type: has_many
+  via: incident_updates[] (embedded)
+- from: ScheduledMaintenance
+  to: Component
+  type: has_many
+  via: components[] (embedded)
+identifiers:
+  scheme: 12-character lowercase alphanumeric platform ids (no type prefix)
+  examples: [lgm23svnh0xr (page), y54fk6gsgfjr (component), z7l2g8m2n80d (incident), c4tbg2y32gn0 (incident update)]
+component_groups_observed:
+- group: Payments
+  id: c1w81cr5p66s
+  children: [SMETS1 Smart Meters, SMETS1 (DCC Enrolled) Smart Meters, SMETS2 Smart Meters, Guest Payments, Open Banking, PayPoint - In Store Payments, PayPoint - IVR Top-up Phone Line, PayZone - In Store Payments]
+- group: My Utilita
+  id: r27wlw274g7k
+  children: [App, Web Portal, Power-up Functionality]
+- group: Websites
+  id: l0rh4qty8q65
+  children: [Utilita.co.uk, join.utilita.co.uk]
+- group: Contact Centre
+  id: kfxh68k3hz9h
+  children: [Telephone Lines, Chatbot]
+- group: null
+  ungrouped: [Smart Meter Installations, Smart Metering Network]

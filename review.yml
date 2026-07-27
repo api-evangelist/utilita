@@ -3,20 +3,51 @@ name: Utilita
 review:
   question: Does Utilita Energy publish any documented, machine-readable public API —
     and does any energy data mandate bind it to do so?
-  answer: false
+  answer: partial
+  answerDetail: |
+    YES to a documented public API, NO to energy data, NO to any mandate.
+    Amended on 2026-07-27 (enrichment round 2). Utilita operates one real, public,
+    anonymous, documented API: the Utilita Status API at
+    https://status.utilita.co.uk/api/v2 (Atlassian Statuspage, on Utilita's own
+    domain), with its endpoint list published by Utilita at
+    https://status.utilita.co.uk/api. Eight GET endpoints return live component
+    health, incidents and scheduled maintenance for 21 tracked services, and the
+    page offers self-serve webhook, RSS, Atom, email and Slack notifications.
+    It carries NO customer, consumption or billing data and no market data, so
+    every energy-data finding below stands unchanged: closed on both axes, with
+    no mandate compelling otherwise.
   date: '2026-07-27'
+  amended: '2026-07-27'
   reviewer: API Evangelist
   tier: utility-retailer
   homeMarket: United Kingdom
   primaryDomain: utilita.co.uk
 findings:
   summary: |
-    Utilita Energy publishes NO public API of any kind. There is no developer
-    portal, no API reference, no OpenAPI/Swagger/AsyncAPI document, no GraphQL
-    schema, no Postman collection, and no open data programme. Every developer
-    host and path probed on 2026-07-27 either failed DNS resolution or returned
-    404. Customer usage, balance and top-up data is reachable only through the
-    My Utilita web portal and mobile app behind an account login.
+    Utilita Energy publishes NO energy-data API. There is no developer portal, no
+    customer usage API, no OpenAPI/Swagger/AsyncAPI document, no GraphQL schema,
+    no Postman collection, and no open data programme. Every developer host and
+    path probed on 2026-07-27 either failed DNS resolution or returned 404.
+    Customer usage, balance and top-up data is reachable only through the My
+    Utilita web portal and mobile app behind an account login.
+
+    AMENDED 2026-07-27 (round 2): one public API does exist and the first pass
+    missed it. status.utilita.co.uk resolves to an Atlassian Statuspage page for
+    Utilita, and that page exposes the standard Statuspage v2 read API on
+    Utilita's own domain, with Utilita publishing the endpoint list at
+    https://status.utilita.co.uk/api. All eight endpoints returned HTTP 200
+    anonymously (summary, status, components, incidents, unresolved incidents,
+    scheduled maintenances, upcoming, active), CORS-open with a 10-second cache
+    window and weak ETags. It reports 21 real Utilita components — SMETS1,
+    SMETS1 (DCC Enrolled) and SMETS2 smart meters, Guest Payments, Open Banking,
+    PayPoint in-store and IVR top-up, PayZone in-store, the My Utilita app and
+    web portal, Power-up functionality, utilita.co.uk, join.utilita.co.uk,
+    telephone lines, the chatbot, smart meter installations and the smart
+    metering network — plus 50 incidents of history and a webhook/RSS/Atom
+    notification surface. That is a genuine operational-transparency API and it
+    is now catalogued with a generated OpenAPI and verbatim response examples.
+    It changes nothing about the energy-data finding: no consumption, billing or
+    market data is exposed anywhere.
 
     The market seam matters here. Britain mandated the smart-meter
     INFRASTRUCTURE, not a consumer data right. Utilita holds an Ofgem supply
@@ -253,15 +284,107 @@ sources:
   type: Regulatory
   note: The Smart Meter Communication Licence and the DCC's role as the licensed GB
     smart-metering communications monopoly.
+probesRound2:
+  date: '2026-07-27'
+  method: >-
+    anonymous HTTPS GET with a desktop user-agent, plus DNS enumeration and a
+    crt.sh certificate-transparency sweep of *.utilita.co.uk
+  results:
+  - url: https://status.utilita.co.uk/
+    status: 200
+    note: Atlassian Statuspage for Utilita, page id lgm23svnh0xr, 21 tracked components. THE FIND.
+  - url: https://status.utilita.co.uk/api
+    status: 200
+    note: Utilita-published API documentation page listing all eight v2 endpoints with cURL and JS examples.
+  - url: https://status.utilita.co.uk/api/v2/summary.json
+    status: 200
+  - url: https://status.utilita.co.uk/api/v2/status.json
+    status: 200
+  - url: https://status.utilita.co.uk/api/v2/components.json
+    status: 200
+  - url: https://status.utilita.co.uk/api/v2/incidents.json
+    status: 200
+    note: 50 incidents returned, ~208 KB.
+  - url: https://status.utilita.co.uk/api/v2/incidents/unresolved.json
+    status: 200
+  - url: https://status.utilita.co.uk/api/v2/scheduled-maintenances.json
+    status: 200
+    note: ~467 KB of maintenance history.
+  - url: https://status.utilita.co.uk/api/v2/scheduled-maintenances/upcoming.json
+    status: 200
+  - url: https://status.utilita.co.uk/api/v2/scheduled-maintenances/active.json
+    status: 200
+  - url: https://status.utilita.co.uk/api/v2/subscribers.json
+    status: 404
+    note: 'Error envelope observed: {"errors":["The requested resource could not be found."]} — not RFC 9457.'
+  - url: https://status.utilita.co.uk/history.rss
+    status: 200
+  - url: https://status.utilita.co.uk/history.atom
+    status: 200
+  - url: https://status.utilita.co.uk/.well-known/security.txt
+    status: 200
+    note: >-
+      Atlassian's PGP-signed security.txt served by the Statuspage platform; Canonical points at
+      atlassian.com. Saved as evidence, NOT recorded as a Utilita disclosure policy.
+  - url: https://whqapi.utilita.co.uk/
+    status: 302
+    note: >-
+      Private API host found via certificate transparency; redirects to /login. /swagger,
+      /swagger/v1/swagger.json, /openapi.json, /api-docs, /api, /health and
+      /.well-known/openid-configuration all 404. No public contract.
+  - url: https://uportal.utilita.co.uk/
+    status: 200
+    note: Broker/partner portal login on AWS. /.well-known/openid-configuration 404.
+  - url: https://join.utilita.co.uk/
+    status: 403
+    note: Customer join/switch flow behind Imperva; blocks anonymous automated requests.
+  - url: https://broker.utilita.co.uk/
+    status: 403
+  - url: https://paymentsportal.utilita.co.uk/
+    status: 200
+  - url: https://community.utilita.co.uk/
+    status: 200
+    note: Customer community forum (Giant Platform). Not a developer community.
+  - url: https://utilita.co.uk/llms.txt
+    status: 404
+  - url: https://utilita.co.uk/.well-known/security.txt
+    status: 404
+  - url: https://utilita.co.uk/.well-known/api-catalog
+    status: 404
+  - url: https://utilita.co.uk/security
+    status: 404
+    note: Also /responsible-disclosure, /vulnerability-disclosure, /trust — all 404. No VDP, no trust centre.
+  - url: https://hackerone.com/utilita
+    status: 404
+    note: Also bugcrowd.com/utilita 404. No bug bounty programme.
+  - url: https://registry.npmjs.org/-/v1/search?text=utilita
+    status: 200
+    note: >-
+      No first-party SDK on npm, PyPI, RubyGems, Packagist or crates.io. Every name collision is an
+      unrelated Italian-language "utilità" utility library. No packages/ artifact written.
+  subdomainsFromCertificateTransparency:
+  - status.utilita.co.uk (the find)
+  - whqapi.utilita.co.uk, uportal.utilita.co.uk, broker.utilita.co.uk, paymentsportal.utilita.co.uk
+  - join.utilita.co.uk, business.utilita.co.uk, home.utilita.co.uk, solar.utilita.co.uk
+  - community.utilita.co.uk, shopmeter.utilita.co.uk, assets.utilita.co.uk
+  - note: >-
+      adfs.utilita.co.uk and sts.utilita.co.uk appear in old certificates but no longer resolve, so
+      no federation metadata or OIDC discovery document could be retrieved.
 actions:
-  apisListed: 0
+  apisListed: 1
   openapiHarvested: false
-  specsCount: 0
-  openapiDirectoryCreated: false
+  openapiGenerated: true
+  specsCount: 1
+  openapiDirectoryCreated: true
   reason: |
-    Nothing real was found to save. The only artifacts that returned HTTP 200 at
-    spec-shaped paths were on api.myutilita.co.uk, a squatted third-party domain
-    unrelated to Utilita, and their bodies were HTML redirect interstitials rather
-    than parseable JSON. Recording them would have been fabrication. The openapi/
-    directory is deliberately omitted.
-  classification: built-stub
+    Round 1 correctly found no energy-data API and correctly refused the
+    api.myutilita.co.uk false positive (a squatted third-party domain whose
+    spec-shaped paths return HTML redirect interstitials). Round 2 found the one
+    real surface it had missed: the public Statuspage v2 read API on
+    status.utilita.co.uk. Utilita publishes no OpenAPI, so
+    openapi/utilita-status-openapi.yml was GENERATED from live observation of all
+    eight endpoints, with an x-evidence block (URL, HTTP status, probe date) on
+    every operation and verbatim response snapshots in examples/. Nothing was
+    invented: no request parameter, error code or field appears that was not
+    observed on the wire.
+  classification: enriched

@@ -1,0 +1,35 @@
+generated: '2026-07-27'
+method: derived
+source: openapi/utilita-status-openapi.yml + observed error responses on 2026-07-27
+format: custom
+rfc9457: false
+envelope:
+  shape: '{"errors": ["<human readable message>"]}'
+  content_type: application/json; charset=utf-8
+  fields:
+  - name: errors
+    type: array of string
+    description: One or more human-readable error messages. No machine-readable code, type URI or field pointer is returned.
+  detail: >-
+    The Utilita Status API does not use RFC 9457 application/problem+json. It returns a plain JSON
+    object with an `errors` string array. There is no error code registry, no `type` URI, no
+    `instance`, and no documented remediation guidance.
+problems:
+- status: 404
+  title: The requested resource could not be found.
+  body: '{"errors":["The requested resource could not be found."]}'
+  when: A path outside the eight published v2 endpoints is requested.
+  evidence:
+    url: https://status.utilita.co.uk/api/v2/subscribers.json
+    http_status: 404
+    probed: '2026-07-27'
+  source_operation: openapi/utilita-status-openapi.yml#/components/responses/NotFound
+not_observed:
+  detail: >-
+    No 401, 403, 409, 422, 429 or 5xx response was produced during probing. The API is anonymous and
+    read-only, so authentication and validation errors have no path to occur; rate-limit and server
+    errors were not triggered and are therefore NOT asserted here rather than guessed.
+other_surfaces:
+  detail: >-
+    Utilita's marketing site returns a branded HTML 404 page (no JSON error contract), and the My
+    Utilita portal is a session-authenticated HTML application. Neither publishes an error catalog.

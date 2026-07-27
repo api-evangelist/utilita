@@ -1,0 +1,85 @@
+generated: '2026-07-27'
+method: searched
+source: https://status.utilita.co.uk/
+spec_type: none
+description: >-
+  Utilita publishes no AsyncAPI document and no general-purpose event API. It does, however, operate a
+  real, anonymous, self-serve event surface on its status page: any developer can subscribe an HTTPS
+  endpoint to Utilita incident and component-status webhooks, or consume the same stream as RSS/Atom.
+  This is the provider's only public push/event surface. Captured as a webhook catalog rather than a
+  fabricated AsyncAPI — Utilita has not published channel or message schemas.
+surface:
+  name: Utilita Status Page notifications
+  platform: Atlassian Statuspage
+  page_id: lgm23svnh0xr
+  subscribe_page: https://status.utilita.co.uk/
+  api: openapi/utilita-status-openapi.yml
+subscription_channels:
+- channel: webhook
+  status: available
+  mechanism: >-
+    Subscribe form on https://status.utilita.co.uk/ posts to
+    https://status.utilita.co.uk/api/v2/subscriptions/webhook.json (reCAPTCHA-protected, not an
+    open programmatic endpoint).
+  fields:
+  - name: endpoint
+    description: The HTTPS URL Utilita's status page should POST notifications to.
+    required: true
+  - name: email
+    description: Email address notified if the webhook endpoint fails.
+    required: true
+  verbatim_description: >-
+    "Get webhook notifications whenever Utilita Status Page creates an incident, updates an
+    incident, resolves an incident or changes a component status."
+  evidence:
+    url: https://status.utilita.co.uk/
+    http_status: 200
+    probed: '2026-07-27'
+- channel: rss
+  status: available
+  url: https://status.utilita.co.uk/history.rss
+  evidence: {http_status: 200, probed: '2026-07-27'}
+- channel: atom
+  status: available
+  url: https://status.utilita.co.uk/history.atom
+  evidence: {http_status: 200, probed: '2026-07-27'}
+- channel: email
+  status: available
+  mechanism: Subscribe form on the status page.
+- channel: slack
+  status: available
+  url: https://subscriptions.statuspage.io/slack_authentication/kickoff?page_code=lgm23svnh0xr
+- channel: sms
+  status: form-present
+  note: SMS subscription form is rendered; Atlassian disabled SMS notifications for Statuspage in August 2023.
+events:
+- event: incident.created
+  description: A new Utilita incident was opened.
+  delivery: [webhook, rss, atom, email, slack]
+- event: incident.updated
+  description: An existing incident received a new update in its timeline.
+  delivery: [webhook, rss, atom, email, slack]
+- event: incident.resolved
+  description: An incident was marked resolved.
+  delivery: [webhook, rss, atom, email, slack]
+- event: component.status_changed
+  description: >-
+    A tracked Utilita component changed status (operational, degraded_performance, partial_outage,
+    major_outage, under_maintenance).
+  delivery: [webhook, email, slack]
+components_covered:
+- Payments (group) — SMETS1 Smart Meters, SMETS1 (DCC Enrolled) Smart Meters, SMETS2 Smart Meters,
+  Guest Payments, Open Banking, PayPoint In Store Payments, PayPoint IVR Top-up Phone Line,
+  PayZone In Store Payments
+- My Utilita (group) — App, Web Portal, Power-up Functionality
+- Websites (group) — Utilita.co.uk, join.utilita.co.uk
+- Contact Centre (group) — Telephone Lines, Chatbot
+- Smart Meter Installations
+- Smart Metering Network
+payload_schema:
+  published: false
+  note: >-
+    Utilita does not publish the webhook payload schema. Message schemas are defined by the Atlassian
+    Statuspage platform, not by Utilita, so none are asserted here. Polling
+    openapi/utilita-status-openapi.yml (getSummary / getStatus) returns the same state with a shape
+    that HAS been observed and documented.

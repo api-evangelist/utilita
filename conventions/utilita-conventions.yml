@@ -1,0 +1,84 @@
+generated: '2026-07-27'
+method: derived
+source: openapi/utilita-status-openapi.yml + live response headers observed 2026-07-27
+scope: >-
+  Cross-cutting request/response semantics for the only public Utilita API surface — the Utilita
+  Status API at https://status.utilita.co.uk/api/v2. Utilita publishes no developer-facing conventions
+  guide; everything below was observed on the wire. Nothing has been assumed from other providers.
+authentication:
+  style: none
+  detail: >-
+    All eight endpoints are anonymous. No API key, bearer token, OAuth 2.0 flow, cookie or mTLS is
+    required or accepted. See authentication/utilita-authentication.yml.
+  artifact: authentication/utilita-authentication.yml
+media_types:
+  request: none (all operations are GET with no body)
+  response: application/json; charset=utf-8
+  alternatives:
+  - application/rss+xml at https://status.utilita.co.uk/history.rss
+  - application/atom+xml at https://status.utilita.co.uk/history.atom
+idempotency:
+  supported: false
+  detail: >-
+    Not applicable and not offered. The public surface is read-only (GET only), so there is no
+    write path, no Idempotency-Key header and no replay contract. No `Idempotency` pointer is
+    wired for this provider — asserting one would be false.
+pagination:
+  supported: false
+  detail: >-
+    No pagination of any kind. Collection endpoints return a fixed recent window (50 incidents
+    observed on /incidents.json) with no page, cursor, limit or offset parameter and no Link header.
+    /incidents/unresolved.json, /scheduled-maintenances/upcoming.json and
+    /scheduled-maintenances/active.json are the only filtered variants offered.
+filtering_and_expansion:
+  query_parameters: none observed
+  detail: >-
+    Filtering is expressed as separate paths (unresolved / upcoming / active) rather than query
+    parameters. Related objects are always fully embedded — incidents carry their
+    `incident_updates[]` and `components[]` inline, so there is no expansion or sparse-fieldset
+    mechanism to invoke.
+versioning:
+  scheme: uri-path
+  current: v2
+  detail: The major version is fixed in the path (/api/v2/...). No version header, no date-based version pinning.
+  artifact: lifecycle/utilita-lifecycle.yml
+caching:
+  cache_control: 'max-age=10, public, s-maxage=10, stale-while-revalidate=20, stale-if-error=3600'
+  etag: true
+  etag_form: weak (W/"...")
+  conditional_requests: ETag returned and exposed via Access-Control-Expose-Headers; If-None-Match is the intended revalidation path.
+  guidance: >-
+    Poll no more often than the 10-second cache window. The status page itself polls
+    /api/v2/status.json for change.
+cors:
+  access_control_allow_origin: '*'
+  access_control_expose_headers: ETag
+  detail: Browser clients can call the API directly from any origin.
+rate_limiting:
+  documented: false
+  headers_observed: none
+  detail: >-
+    No RateLimit / X-RateLimit / Retry-After headers were returned and Utilita documents no quota.
+    The API is CDN-fronted (Atlassian Edge + CloudFront); treat the 10-second cache window as the
+    practical polling floor.
+tracing:
+  request_id_headers: [atl-request-id, atl-traceid, x-amz-cf-id]
+  detail: >-
+    Platform-issued trace identifiers are returned on every response. They are Atlassian/CloudFront
+    identifiers, not a Utilita-documented support handle, but they are the only correlation ids the
+    surface offers.
+error_envelope:
+  format: custom
+  shape: '{"errors": ["<human readable message>"]}'
+  content_type: application/json
+  rfc9457: false
+  detail: Observed on GET /api/v2/subscribers.json → 404 {"errors":["The requested resource could not be found."]}
+  artifact: errors/utilita-problem-types.yml
+events:
+  artifact: asyncapi/utilita-status-webhooks.yml
+  detail: Incident and component-status webhooks, plus RSS/Atom feeds, are the push complement to polling this API.
+transport_security:
+  https_only: true
+  hsts: 'max-age=259200 on status.utilita.co.uk'
+  http_version: HTTP/2 (h3 advertised via alt-svc)
+  artifact: security/utilita-domain-security.yml

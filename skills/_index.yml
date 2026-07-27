@@ -1,0 +1,16 @@
+generated: '2026-07-27'
+method: generated
+source: openapi/utilita-status-openapi.yml
+note: >-
+  One skill only — Utilita publishes one public API. Every operationId referenced was verified
+  against a live 200 response on 2026-07-27; none were invented.
+skills:
+- file: utilita-check-service-status.md
+  name: Check Utilita service status
+  description: >-
+    Read Utilita's public status API to determine whether smart meters, payment channels, the My
+    Utilita app/portal, websites or the contact centre are degraded, and report open incidents and
+    scheduled maintenance.
+  api: openapi/utilita-status-openapi.yml
+  authentication: none
+  operations: [getStatus, getSummary, getComponents, getUnresolvedIncidents, getUpcomingScheduledMaintenances, getActiveScheduledMaintenances]

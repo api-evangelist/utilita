@@ -1,0 +1,43 @@
+generated: '2026-07-27'
+method: derived
+source: openapi/utilita-status-openapi.yml + anonymous probes of Utilita hosts on 2026-07-27
+summary:
+  types: [none]
+  api_key_in: []
+  oauth2_flows: []
+  detail: >-
+    Utilita's one public API — the Utilita Status API — is fully anonymous. Every other Utilita
+    surface is a human login, not a documented API authentication scheme. There is no developer
+    credential of any kind to obtain: no API keys, no OAuth 2.0, no OpenID Connect discovery, no
+    mTLS, no client-credentials flow.
+schemes:
+- name: none
+  type: none
+  applies_to: Utilita Status API (https://status.utilita.co.uk/api/v2)
+  sources: [openapi/utilita-status-openapi.yml]
+  detail: >-
+    All eight operations were retrieved with no credentials and returned HTTP 200. The spec declares
+    `security: []` at the document and operation level to state this explicitly.
+human_authentication_surfaces:
+- surface: My Utilita customer portal
+  url: https://my.utilita.co.uk/login
+  model: server-side session cookies (XSRF-TOKEN + myutilita_session), Imperva/Incapsula in front
+  api_credential: false
+- surface: Utilita broker / partner portals
+  urls: [https://uportal.utilita.co.uk/login, https://whqapi.utilita.co.uk/login, https://broker.utilita.co.uk/]
+  model: private login pages behind a WAF; no published authentication contract
+  api_credential: false
+discovery_probes:
+  date: '2026-07-27'
+  results:
+  - {url: 'https://utilita.co.uk/.well-known/openid-configuration', status: 404}
+  - {url: 'https://my.utilita.co.uk/.well-known/openid-configuration', status: 404}
+  - {url: 'https://uportal.utilita.co.uk/.well-known/openid-configuration', status: 404}
+  - {url: 'https://whqapi.utilita.co.uk/.well-known/openid-configuration', status: 404}
+  - {url: 'https://join.utilita.co.uk/.well-known/openid-configuration', status: 403, note: blocked by Imperva WAF}
+  - {url: 'https://utilita.co.uk/.well-known/oauth-authorization-server', status: 404}
+  - {url: 'https://my.utilita.co.uk/.well-known/oauth-authorization-server', status: 404}
+notes: >-
+  Third parties who need GB smart-meter data with consumer consent authenticate to the Smart DCC as
+  a Smart Energy Code "Other User", not to Utilita. That is a regulated accession process with its
+  own security assurance regime — it is not a Utilita credential and is out of scope for this file.
