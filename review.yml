@@ -1,0 +1,267 @@
+aid: utilita
+name: Utilita
+review:
+  question: Does Utilita Energy publish any documented, machine-readable public API —
+    and does any energy data mandate bind it to do so?
+  answer: false
+  date: '2026-07-27'
+  reviewer: API Evangelist
+  tier: utility-retailer
+  homeMarket: United Kingdom
+  primaryDomain: utilita.co.uk
+findings:
+  summary: |
+    Utilita Energy publishes NO public API of any kind. There is no developer
+    portal, no API reference, no OpenAPI/Swagger/AsyncAPI document, no GraphQL
+    schema, no Postman collection, and no open data programme. Every developer
+    host and path probed on 2026-07-27 either failed DNS resolution or returned
+    404. Customer usage, balance and top-up data is reachable only through the
+    My Utilita web portal and mobile app behind an account login.
+
+    The market seam matters here. Britain mandated the smart-meter
+    INFRASTRUCTURE, not a consumer data right. Utilita holds an Ofgem supply
+    licence, is obliged by that licence to accede to the Smart Energy Code and
+    become a DCC user, and communicates with meters through the Smart DCC — a
+    licensed monopoly whose DCC User Interface is a private, contracted B2B
+    interface, not a public API. There is no UK equivalent of the Australian
+    Consumer Data Right for energy and no Ontario-style Green Button regulation,
+    so nothing compels Utilita to expose customer usage to accredited third
+    parties. Third parties who want GB smart-meter data go to the DCC as an
+    "Other User" under the Data Access and Privacy Framework with explicit
+    consumer consent — they do not go to Utilita.
+
+    The contrast inside the same market is the finding: Octopus Energy, a UK
+    peer, publishes a real self-serve developer API and licenses its Kraken
+    platform to utilities worldwide, and NESO publishes a genuinely open Carbon
+    Intensity API. Utilita, a comparably sized supplier, publishes neither
+    consumer nor market data. The UK's API-native supplier is the exception, not
+    the rule; Utilita is the rule.
+mandate:
+  regime: smart-meter-infrastructure
+  regimeDetail: |
+    GB Smart Metering: the Smart Energy Code (SEC), the Smart Meter Communication
+    Licence held by the Smart DCC, and the SMETS1/SMETS2 device specifications.
+    All licensed energy suppliers are required by their supply licence conditions
+    to accede to the SEC and become a DCC User. This is an obligation to install
+    and communicate with meters over mandated infrastructure. It is NOT a
+    consumer data-portability right and it creates no obligation to publish an
+    API.
+  status: live-implemented
+  statusJustification: |
+    Recorded as live-implemented for the INFRASTRUCTURE mandate only, and the
+    evidence is documentary rather than an endpoint — say so plainly.
+    What was verified:
+      - Utilita installed the first residential smart electricity meter in Great
+        Britain in 2005 and the first combined smart gas + electricity system in
+        2008 (company About page + Wikipedia).
+      - UK Parliament written evidence on smart meters records Utilita's
+        portfolio as ~99% prepayment customers, ~80% of whom use SMETS1 meters
+        in prepayment mode — i.e. a real, operating smart-meter estate.
+      - Ofgem hosts a Utilita Energy response to the DCC Operational Performance
+        Regime consultation, which is regulator-published evidence that Utilita
+        participates in DCC/SEC governance as a user.
+    What was NOT verified:
+      - No SEC party register entry was retrieved directly; the SECCo party-list
+        URLs probed returned 404 (see probes below).
+      - No DCC endpoint, base URI, or machine-readable artifact was obtained —
+        the DCC User Interface is a private licensed interface and is not
+        publicly documented.
+  consumerDataRight:
+    applies: false
+    detail: |
+      No consumer data-portability mandate binds Utilita. The UK has no CDR-energy
+      equivalent, no Ontario-style Green Button regulation, and no Green Button
+      voluntary adoption was found at Utilita. Consumer access to smart-meter data
+      by third parties runs through the DCC "Other User" route under the Data
+      Access and Privacy Framework with prior consumer consent, not through the
+      supplier.
+    regimeIfAsked: none
+dataStandard:
+  apiDataStandard: no standard reference found
+  detail: |
+    No Green Button / ESPI, no CDR Consumer Data Standards (energy), no OCPP/OCPI,
+    no OpenADR, no IEEE 2030.5, no IEC CIM 61968/61970, and no proprietary published
+    schema. The only standards in play are device/communications standards —
+    SMETS1/SMETS2 metering under the Smart Energy Code — which are not API data
+    standards and are not exposed to developers.
+dataSplit:
+  consumerDataAPI:
+    available: false
+    detail: |
+      No documented API returns an individual customer's usage or billing data.
+      The My Utilita web portal (https://my.utilita.co.uk/login) and the My Utilita
+      iOS/Android apps are the only routes, and both require a Utilita customer
+      account. No public API contract backs them.
+  marketDataOpen:
+    available: false
+    detail: |
+      Utilita publishes no open grid, market, settlement or system data. There is
+      no /open-data or /data page (both 404) and no data licence or portal. GB
+      open market data in this sector comes from other organizations entirely —
+      NESO's Carbon Intensity API, Elexon's BSC/Balancing and Settlement data, and
+      DNO open-data portals — none of which are Utilita surfaces.
+  theSplit: |
+    Closed on BOTH axes. This is not the "open market data / closed consumer data"
+    split seen at system operators, nor the mandated-consumer-data shape seen in
+    Australia. It is a plain retail supplier with no API programme at all.
+access:
+  gate: none-published
+  gated: true
+  howADeveloperGetsIn: |
+    There is no route. No developer portal exists to sign up for, no application
+    form, no partner programme page, no data licence, and no published contact for
+    API access. A developer's only options are (a) log in to My Utilita as a
+    customer and read the screen, or (b) go around Utilita entirely and pursue DCC
+    "Other User" accession under the Smart Energy Code, which requires SEC party
+    status, security assurance and consumer consent — a regulated onboarding to the
+    DCC, not to Utilita.
+  authModel: |
+    Customer session authentication only. https://my.utilita.co.uk/login is a PHP 8
+    (Laravel-style: XSRF-TOKEN + myutilita_session cookies) application on Azure App
+    Service behind Imperva/Incapsula. No OAuth 2.0, no OpenID Connect, no API keys,
+    no mTLS, and no client-credentials flow is published.
+    https://utilita.co.uk/.well-known/openid-configuration returns 404 and
+    https://my.utilita.co.uk/.well-known/openid-configuration returns 404, so no
+    OIDC discovery document is served anonymously.
+probes:
+  date: '2026-07-27'
+  method: anonymous HTTPS GET/HEAD with a desktop browser user-agent, redirects followed
+  results:
+  - url: https://utilita.co.uk/
+    status: 200
+    note: Corporate and customer marketing site. No developer or API navigation anywhere.
+  - url: https://utilita.co.uk/about-us
+    status: 200
+    note: Company overview. Mentions the My Utilita app; no APIs, no data programme.
+  - url: https://utilita.co.uk/help
+    status: 200
+    note: Customer help centre. No developer content.
+  - url: https://utilita.co.uk/careers
+    status: 200
+  - url: https://utilita.co.uk/robots.txt
+    status: 200
+    note: 'Content is only "User-agent: * / Disallow:" — no sitemap directive, no hidden developer paths disclosed.'
+  - url: https://www.utilita.co.uk/sitemap.xml
+    status: 403
+    note: Blocked by the WAF; could not enumerate.
+  - url: https://developer.utilita.co.uk/
+    status: 000
+    note: DNS does not resolve.
+  - url: https://developers.utilita.co.uk/
+    status: 000
+    note: DNS does not resolve.
+  - url: https://api.utilita.co.uk/
+    status: 000
+    note: DNS does not resolve.
+  - url: https://docs.utilita.co.uk/
+    status: 000
+    note: DNS does not resolve.
+  - url: https://data.utilita.co.uk/
+    status: 000
+    note: DNS does not resolve.
+  - url: https://utilita.co.uk/developers
+    status: 404
+  - url: https://utilita.co.uk/api
+    status: 404
+  - url: https://utilita.co.uk/docs
+    status: 404
+  - url: https://utilita.co.uk/data
+    status: 404
+  - url: https://utilita.co.uk/open-data
+    status: 404
+  - url: https://utilita.co.uk/openapi.json
+    status: 404
+  - url: https://utilita.co.uk/swagger.json
+    status: 404
+  - url: https://utilita.co.uk/api-docs
+    status: 404
+  - url: https://utilita.co.uk/.well-known/openid-configuration
+    status: 404
+  - url: https://my.utilita.co.uk/
+    status: 200
+    note: Redirects to https://my.utilita.co.uk/login — a CUSTOMER login, not a developer portal.
+  - url: https://my.utilita.co.uk/.well-known/openid-configuration
+    status: 404
+  - url: https://utilita.com/
+    status: 200
+    note: Resolves; brand domain. No developer surface.
+  - url: https://myutilita.co.uk/
+    status: 200
+    note: NOT Utilita. Parked/monetized domain served by a Cowboy server with a JS
+      redirect interstitial.
+  - url: https://api.myutilita.co.uk/
+    status: 302
+    note: NOT Utilita. Redirects to http://survey-smiles.com. Its /swagger/v1/swagger.json,
+      /openapi.json and /.well-known/openid-configuration all return HTTP 200 but the
+      bodies are the same JS-redirect interstitial HTML, not JSON. Explicitly rejected —
+      a false positive that must not be recorded as a Utilita spec.
+  - url: https://github.com/utilita
+    status: 200
+    note: Personal GitHub user account, 0 public repositories, no name/company/blog set.
+      Not an official Utilita organization.
+  - url: https://github.com/utilita-energy
+    status: 200
+    note: 'GitHub organization "Utilita-Energy", created 2021-05-19, 1 public repo named
+      "Repository" described as "First One", last pushed 2021-06-16. No API artifacts.
+      Effectively abandoned; not an engineering presence.'
+  - url: https://smartenergycodecompany.co.uk/sec-parties/
+    status: 404
+    note: SEC party register path not found at this URL.
+  - url: https://smartenergycodecompany.co.uk/parties/
+    status: 404
+    note: SEC party register path not found at this URL.
+  - url: https://procode.technology/
+    status: 200
+    note: Procode, a sister company under the same group (Luxion Group, formerly Utilita
+      Group). Markets "Smart Datastream" and an "Intelligent Data Adapter" that resell
+      DCC connectivity to suppliers. Commercial B2B products with NO public developer
+      documentation and NO published API. Not a Utilita API and not listed as one.
+  - url: https://loop.homes/
+    status: 200
+    note: Loop (Trust Power), acquired by Procode in 2024 — a consumer smart-meter data
+      app in the same group. Recorded for group context only; not a Utilita surface.
+sources:
+- url: https://utilita.co.uk/about-us
+  type: About
+  note: Self-description — smart Pay As You Go supplier since 2003; first GB smart meter
+    installer; My Utilita app; Utilita Home solar; Energy Hubs.
+- url: https://en.wikipedia.org/wiki/Utilita_Energy
+  type: Reference
+  note: Founded 2003 by Bill Bullen, HQ Eastleigh; 800,000+ customers (Jan 2021, ~2.6%
+    of the domestic market); first residential smart electricity meter 2005, first
+    combined gas+electricity smart system 2008; My Utilita app launched 2018; parent
+    Luxion Group (formerly Utilita Group) also owns Procode and Canary Care.
+- url: https://committees.parliament.uk/writtenevidence/66782/html/
+  type: Regulatory
+  note: UK Parliament written evidence on smart meters — records Utilita's portfolio as
+    ~99% prepayment customers, ~80% on SMETS1 meters in prepayment mode.
+- url: https://www.ofgem.gov.uk/system/files/docs/2017/03/utilita_energy_-_dcc_opr_consultation_response.pdf
+  type: Regulatory
+  note: Ofgem-published Utilita Energy response to the DCC Operational Performance Regime
+    consultation — regulator-published evidence of Utilita participating in DCC/SEC
+    governance as a user.
+- url: https://smartenergycodecompany.co.uk/becoming-a-dcc-user/
+  type: Regulatory
+  note: All energy suppliers holding an energy licence are required by licence condition
+    to become a DCC User; only DCC Users may use DCC Services and the DCC User Interface.
+- url: https://www.gov.uk/government/publications/smart-metering-implementation-programme-review-of-the-data-access-and-privacy-framework/smart-metering-implementation-programme-review-of-the-data-access-and-privacy-framework
+  type: Regulatory
+  note: The GB Data Access and Privacy Framework — third-party "Other Users" access
+    consumption data via the DCC with prior consumer consent. Consent-based, not an
+    open-banking-style portability mandate, and not routed through the supplier.
+- url: https://www.smartdcc.co.uk/about-dcc/governance-regulations/smart-dcc-licence-regulation/
+  type: Regulatory
+  note: The Smart Meter Communication Licence and the DCC's role as the licensed GB
+    smart-metering communications monopoly.
+actions:
+  apisListed: 0
+  openapiHarvested: false
+  specsCount: 0
+  openapiDirectoryCreated: false
+  reason: |
+    Nothing real was found to save. The only artifacts that returned HTTP 200 at
+    spec-shaped paths were on api.myutilita.co.uk, a squatted third-party domain
+    unrelated to Utilita, and their bodies were HTML redirect interstitials rather
+    than parseable JSON. Recording them would have been fabrication. The openapi/
+    directory is deliberately omitted.
+  classification: built-stub
