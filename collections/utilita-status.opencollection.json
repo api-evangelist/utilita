@@ -1,0 +1,130 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Utilita Status API",
+    "version": "2"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Status",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get status page summary",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://status.utilita.co.uk/api/v2/summary.json"
+          },
+          "docs": "Returns a rollup of the page: the status indicator, every component and its status, all unresolved incidents, and any upcoming or in-progress scheduled maintenances. One call answers \"is anything wrong at Utilita right now\"."
+        },
+        {
+          "info": {
+            "name": "Get overall status indicator",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://status.utilita.co.uk/api/v2/status.json"
+          },
+          "docs": "Returns the page object and a single rolled-up status indicator/description (for example `none` / \"All Systems Operational\"). This is the endpoint the status page itself polls for change."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Components",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List components",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://status.utilita.co.uk/api/v2/components.json"
+          },
+          "docs": "Returns every component tracked on the Utilita status page, including group components (Payments, My Utilita, Websites, Contact Centre) and their children, each with its current status."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Incidents",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List recent incidents",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://status.utilita.co.uk/api/v2/incidents.json"
+          },
+          "docs": "Returns the most recent incidents on the page (resolved and unresolved), each with its full `incident_updates` timeline and the components it affected."
+        },
+        {
+          "info": {
+            "name": "List unresolved incidents",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://status.utilita.co.uk/api/v2/incidents/unresolved.json"
+          },
+          "docs": "Returns only the incidents that are not yet resolved. Empty array when all systems are operational."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Scheduled Maintenance",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List scheduled maintenances",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://status.utilita.co.uk/api/v2/scheduled-maintenances.json"
+          },
+          "docs": "Returns the most recent scheduled maintenance windows, past and future, with their update timelines."
+        },
+        {
+          "info": {
+            "name": "List upcoming scheduled maintenances",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://status.utilita.co.uk/api/v2/scheduled-maintenances/upcoming.json"
+          },
+          "docs": "Returns only maintenance windows scheduled in the future."
+        },
+        {
+          "info": {
+            "name": "List active scheduled maintenances",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://status.utilita.co.uk/api/v2/scheduled-maintenances/active.json"
+          },
+          "docs": "Returns only maintenance windows that are in progress right now. Empty array when none are running."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
