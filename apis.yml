@@ -43,36 +43,20 @@ created: '2026-07-27'
 modified: '2026-07-27'
 specificationVersion: '0.23'
 apis:
-- aid: utilita:utilita-status-api
-  name: Utilita Status API
-  description: >-
-    Public, anonymous, read-only JSON API reporting the live operational state of Utilita Energy's
-    services. Eight GET endpoints under https://status.utilita.co.uk/api/v2 return the page status
-    indicator, all 21 tracked components (SMETS1, SMETS1 DCC-enrolled and SMETS2 smart meters, Guest
-    Payments, Open Banking, PayPoint in-store and IVR top-up, PayZone in-store, the My Utilita app and
-    web portal, Power-up functionality, utilita.co.uk, join.utilita.co.uk, telephone lines, the
-    chatbot, smart meter installations and the smart metering network), open and historical incidents
-    with their full update timelines, and scheduled maintenance windows. No API key, no sign-up, no
-    OAuth — every endpoint is anonymous and CORS-open with a 10-second cache window. Runs on Atlassian
-    Statuspage under Utilita's own domain, and offers webhook, RSS, Atom, email and Slack
-    subscriptions for push delivery. This is Utilita's only public API; it carries no customer,
-    billing or consumption data.
+- aid: utilita:utilita-components-api
+  name: Utilita Components API
+  description: The individual Utilita services tracked on the status page.
   humanURL: https://status.utilita.co.uk/api
   baseURL: https://status.utilita.co.uk/api/v2
   tags:
-  - Status
-  - Incidents
   - Components
-  - Scheduled Maintenance
-  - Smart Metering
-  - Energy
   properties:
+  - type: OpenAPI
+    url: openapi/utilita-components-api-openapi.yml
   - type: Documentation
     url: https://status.utilita.co.uk/api
   - type: APIReference
     url: https://status.utilita.co.uk/api
-  - type: OpenAPI
-    url: openapi/utilita-status-openapi.yml
   - type: Examples
     url: examples/_index.yml
   - type: Webhooks
@@ -89,9 +73,99 @@ apis:
     url: data-model/utilita-data-model.yml
   - type: Lifecycle
     url: lifecycle/utilita-lifecycle.yml
-  - type: AgentSkill
-    url: skills/utilita-check-service-status.md
+- aid: utilita:utilita-incidents-api
+  name: Utilita Incidents API
+  description: Unplanned service incidents and their update timeline.
+  humanURL: https://status.utilita.co.uk/api
+  baseURL: https://status.utilita.co.uk/api/v2
+  tags:
+  - Incidents
+  properties:
+  - type: OpenAPI
+    url: openapi/utilita-incidents-api-openapi.yml
+  - type: Documentation
+    url: https://status.utilita.co.uk/api
+  - type: APIReference
+    url: https://status.utilita.co.uk/api
+  - type: Examples
+    url: examples/_index.yml
+  - type: Webhooks
+    url: asyncapi/utilita-status-webhooks.yml
+  - type: StatusPage
+    url: https://status.utilita.co.uk/
+  - type: Authentication
+    url: authentication/utilita-authentication.yml
+  - type: Conventions
+    url: conventions/utilita-conventions.yml
+  - type: ErrorCatalog
+    url: errors/utilita-problem-types.yml
+  - type: DataModel
+    url: data-model/utilita-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/utilita-lifecycle.yml
+- aid: utilita:utilita-scheduled-maintenance-api
+  name: Utilita Scheduled Maintenance API
+  description: Planned maintenance windows.
+  humanURL: https://status.utilita.co.uk/api
+  baseURL: https://status.utilita.co.uk/api/v2
+  tags:
+  - Scheduled Maintenance
+  properties:
+  - type: OpenAPI
+    url: openapi/utilita-scheduled-maintenance-api-openapi.yml
+  - type: Documentation
+    url: https://status.utilita.co.uk/api
+  - type: APIReference
+    url: https://status.utilita.co.uk/api
+  - type: Examples
+    url: examples/_index.yml
+  - type: Webhooks
+    url: asyncapi/utilita-status-webhooks.yml
+  - type: StatusPage
+    url: https://status.utilita.co.uk/
+  - type: Authentication
+    url: authentication/utilita-authentication.yml
+  - type: Conventions
+    url: conventions/utilita-conventions.yml
+  - type: ErrorCatalog
+    url: errors/utilita-problem-types.yml
+  - type: DataModel
+    url: data-model/utilita-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/utilita-lifecycle.yml
+- aid: utilita:utilita-status-api
+  name: Utilita Status API
+  description: Overall page status and rolled-up summary.
+  humanURL: https://status.utilita.co.uk/api
+  baseURL: https://status.utilita.co.uk/api/v2
+  tags:
+  - Status
+  properties:
+  - type: OpenAPI
+    url: openapi/utilita-status-api-openapi.yml
+  - type: Documentation
+    url: https://status.utilita.co.uk/api
+  - type: APIReference
+    url: https://status.utilita.co.uk/api
+  - type: Examples
+    url: examples/_index.yml
+  - type: Webhooks
+    url: asyncapi/utilita-status-webhooks.yml
+  - type: StatusPage
+    url: https://status.utilita.co.uk/
+  - type: Authentication
+    url: authentication/utilita-authentication.yml
+  - type: Conventions
+    url: conventions/utilita-conventions.yml
+  - type: ErrorCatalog
+    url: errors/utilita-problem-types.yml
+  - type: DataModel
+    url: data-model/utilita-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/utilita-lifecycle.yml
 common:
+- type: AgentSkill
+  url: skills/utilita-check-service-status.md
 - type: Website
   url: https://utilita.co.uk/
 - type: About
