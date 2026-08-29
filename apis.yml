@@ -27,6 +27,18 @@ description: >-
   incident and scheduled-maintenance history and self-serve webhook, RSS and Atom
   notifications. Recorded here as an honest closed-supplier baseline for the UK energy
   sector, with an operational-transparency surface that is real and usable.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://utilita.co.uk/favicon.ico
 tags:
 - Energy
