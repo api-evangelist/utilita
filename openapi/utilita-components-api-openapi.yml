@@ -47,16 +47,6 @@ paths:
         probed: '2026-07-27'
         example: examples/utilita-status-components.json
 components:
-  responses:
-    NotFound:
-      description: The requested resource could not be found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            errors:
-            - The requested resource could not be found.
   schemas:
     ComponentsResponse:
       type: object
@@ -70,32 +60,6 @@ components:
       required:
       - page
       - components
-    Page:
-      type: object
-      description: Identity of the Utilita status page the response came from.
-      properties:
-        id:
-          type: string
-          description: Statuspage page identifier.
-          example: lgm23svnh0xr
-        name:
-          type: string
-          example: Utilita Status Page
-        url:
-          type: string
-          format: uri
-          example: https://status.utilita.co.uk
-        time_zone:
-          type: string
-          example: Europe/London
-        updated_at:
-          type: string
-          format: date-time
-      required:
-      - id
-      - name
-      - url
-      - updated_at
     Component:
       type: object
       description: A single Utilita service tracked on the status page.
@@ -150,6 +114,32 @@ components:
       - id
       - name
       - status
+    Page:
+      type: object
+      description: Identity of the Utilita status page the response came from.
+      properties:
+        id:
+          type: string
+          description: Statuspage page identifier.
+          example: lgm23svnh0xr
+        name:
+          type: string
+          example: Utilita Status Page
+        url:
+          type: string
+          format: uri
+          example: https://status.utilita.co.uk
+        time_zone:
+          type: string
+          example: Europe/London
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - name
+      - url
+      - updated_at
     Error:
       type: object
       description: Error envelope observed on this API. Not RFC 9457 problem+json — a plain JSON object with an `errors` array of human-readable strings, served as application/json.
@@ -160,6 +150,16 @@ components:
             type: string
       required:
       - errors
+  responses:
+    NotFound:
+      description: The requested resource could not be found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            errors:
+            - The requested resource could not be found.
 externalDocs:
   description: Utilita Status Page API documentation (published by Utilita on its status page)
   url: https://status.utilita.co.uk/api

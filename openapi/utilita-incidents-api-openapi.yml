@@ -72,6 +72,163 @@ paths:
         example: examples/utilita-status-unresolved-incidents.json
 components:
   schemas:
+    IncidentUpdate:
+      type: object
+      description: One entry in an incident's update timeline.
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum:
+          - investigating
+          - identified
+          - monitoring
+          - resolved
+          - postmortem
+          - scheduled
+          - in_progress
+          - verifying
+          - completed
+        body:
+          type: string
+        incident_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        display_at:
+          type: string
+          format: date-time
+        affected_components:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AffectedComponent'
+        deliver_notifications:
+          type: boolean
+        custom_tweet:
+          type:
+          - string
+          - 'null'
+        tweet_id:
+          type:
+          - string
+          - 'null'
+      required:
+      - id
+      - status
+      - body
+      - incident_id
+    Component:
+      type: object
+      description: A single Utilita service tracked on the status page.
+      properties:
+        id:
+          type: string
+          example: y54fk6gsgfjr
+        name:
+          type: string
+          example: SMETS1 Smart Meters
+        description:
+          type:
+          - string
+          - 'null'
+        status:
+          type: string
+          enum:
+          - operational
+          - degraded_performance
+          - partial_outage
+          - major_outage
+          - under_maintenance
+          example: operational
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        position:
+          type: integer
+        page_id:
+          type: string
+        group:
+          type: boolean
+          description: True when this component is a group containing other components.
+        group_id:
+          type:
+          - string
+          - 'null'
+          description: Identifier of the parent group component, when this component belongs to one.
+        only_show_if_degraded:
+          type: boolean
+        showcase:
+          type: boolean
+        start_date:
+          type:
+          - string
+          - 'null'
+          format: date
+      required:
+      - id
+      - name
+      - status
+    Page:
+      type: object
+      description: Identity of the Utilita status page the response came from.
+      properties:
+        id:
+          type: string
+          description: Statuspage page identifier.
+          example: lgm23svnh0xr
+        name:
+          type: string
+          example: Utilita Status Page
+        url:
+          type: string
+          format: uri
+          example: https://status.utilita.co.uk
+        time_zone:
+          type: string
+          example: Europe/London
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - name
+      - url
+      - updated_at
+    IncidentsResponse:
+      type: object
+      properties:
+        page:
+          $ref: '#/components/schemas/Page'
+        incidents:
+          type: array
+          items:
+            $ref: '#/components/schemas/Incident'
+      required:
+      - page
+      - incidents
+    AffectedComponent:
+      type: object
+      description: A component touched by an incident update, with its status transition.
+      properties:
+        code:
+          type: string
+          description: Component id.
+        name:
+          type: string
+        old_status:
+          type: string
+        new_status:
+          type: string
     Incident:
       type: object
       description: An unplanned service incident.
@@ -144,163 +301,6 @@ components:
             type: string
       required:
       - errors
-    IncidentsResponse:
-      type: object
-      properties:
-        page:
-          $ref: '#/components/schemas/Page'
-        incidents:
-          type: array
-          items:
-            $ref: '#/components/schemas/Incident'
-      required:
-      - page
-      - incidents
-    IncidentUpdate:
-      type: object
-      description: One entry in an incident's update timeline.
-      properties:
-        id:
-          type: string
-        status:
-          type: string
-          enum:
-          - investigating
-          - identified
-          - monitoring
-          - resolved
-          - postmortem
-          - scheduled
-          - in_progress
-          - verifying
-          - completed
-        body:
-          type: string
-        incident_id:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        display_at:
-          type: string
-          format: date-time
-        affected_components:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/AffectedComponent'
-        deliver_notifications:
-          type: boolean
-        custom_tweet:
-          type:
-          - string
-          - 'null'
-        tweet_id:
-          type:
-          - string
-          - 'null'
-      required:
-      - id
-      - status
-      - body
-      - incident_id
-    Page:
-      type: object
-      description: Identity of the Utilita status page the response came from.
-      properties:
-        id:
-          type: string
-          description: Statuspage page identifier.
-          example: lgm23svnh0xr
-        name:
-          type: string
-          example: Utilita Status Page
-        url:
-          type: string
-          format: uri
-          example: https://status.utilita.co.uk
-        time_zone:
-          type: string
-          example: Europe/London
-        updated_at:
-          type: string
-          format: date-time
-      required:
-      - id
-      - name
-      - url
-      - updated_at
-    Component:
-      type: object
-      description: A single Utilita service tracked on the status page.
-      properties:
-        id:
-          type: string
-          example: y54fk6gsgfjr
-        name:
-          type: string
-          example: SMETS1 Smart Meters
-        description:
-          type:
-          - string
-          - 'null'
-        status:
-          type: string
-          enum:
-          - operational
-          - degraded_performance
-          - partial_outage
-          - major_outage
-          - under_maintenance
-          example: operational
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        position:
-          type: integer
-        page_id:
-          type: string
-        group:
-          type: boolean
-          description: True when this component is a group containing other components.
-        group_id:
-          type:
-          - string
-          - 'null'
-          description: Identifier of the parent group component, when this component belongs to one.
-        only_show_if_degraded:
-          type: boolean
-        showcase:
-          type: boolean
-        start_date:
-          type:
-          - string
-          - 'null'
-          format: date
-      required:
-      - id
-      - name
-      - status
-    AffectedComponent:
-      type: object
-      description: A component touched by an incident update, with its status transition.
-      properties:
-        code:
-          type: string
-          description: Component id.
-        name:
-          type: string
-        old_status:
-          type: string
-        new_status:
-          type: string
   responses:
     NotFound:
       description: The requested resource could not be found.

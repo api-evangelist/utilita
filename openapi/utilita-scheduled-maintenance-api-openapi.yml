@@ -94,16 +94,18 @@ paths:
         example: examples/utilita-status-active-maintenances.json
 components:
   schemas:
-    Error:
+    ScheduledMaintenancesResponse:
       type: object
-      description: Error envelope observed on this API. Not RFC 9457 problem+json — a plain JSON object with an `errors` array of human-readable strings, served as application/json.
       properties:
-        errors:
+        page:
+          $ref: '#/components/schemas/Page'
+        scheduled_maintenances:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/ScheduledMaintenance'
       required:
-      - errors
+      - page
+      - scheduled_maintenances
     IncidentUpdate:
       type: object
       description: One entry in an incident's update timeline.
@@ -156,32 +158,6 @@ components:
       - status
       - body
       - incident_id
-    Page:
-      type: object
-      description: Identity of the Utilita status page the response came from.
-      properties:
-        id:
-          type: string
-          description: Statuspage page identifier.
-          example: lgm23svnh0xr
-        name:
-          type: string
-          example: Utilita Status Page
-        url:
-          type: string
-          format: uri
-          example: https://status.utilita.co.uk
-        time_zone:
-          type: string
-          example: Europe/London
-        updated_at:
-          type: string
-          format: date-time
-      required:
-      - id
-      - name
-      - url
-      - updated_at
     Component:
       type: object
       description: A single Utilita service tracked on the status page.
@@ -236,6 +212,32 @@ components:
       - id
       - name
       - status
+    Page:
+      type: object
+      description: Identity of the Utilita status page the response came from.
+      properties:
+        id:
+          type: string
+          description: Statuspage page identifier.
+          example: lgm23svnh0xr
+        name:
+          type: string
+          example: Utilita Status Page
+        url:
+          type: string
+          format: uri
+          example: https://status.utilita.co.uk
+        time_zone:
+          type: string
+          example: Europe/London
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - name
+      - url
+      - updated_at
     AffectedComponent:
       type: object
       description: A component touched by an incident update, with its status transition.
@@ -249,6 +251,16 @@ components:
           type: string
         new_status:
           type: string
+    Error:
+      type: object
+      description: Error envelope observed on this API. Not RFC 9457 problem+json — a plain JSON object with an `errors` array of human-readable strings, served as application/json.
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+      required:
+      - errors
     ScheduledMaintenance:
       type: object
       description: A planned maintenance window.
@@ -316,18 +328,6 @@ components:
       - status
       - scheduled_for
       - scheduled_until
-    ScheduledMaintenancesResponse:
-      type: object
-      properties:
-        page:
-          $ref: '#/components/schemas/Page'
-        scheduled_maintenances:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScheduledMaintenance'
-      required:
-      - page
-      - scheduled_maintenances
   responses:
     NotFound:
       description: The requested resource could not be found.
