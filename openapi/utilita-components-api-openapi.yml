@@ -48,18 +48,42 @@ paths:
         example: examples/utilita-status-components.json
 components:
   schemas:
-    ComponentsResponse:
+    Error:
       type: object
+      description: Error envelope observed on this API. Not RFC 9457 problem+json — a plain JSON object with an `errors` array of human-readable strings, served as application/json.
       properties:
-        page:
-          $ref: '#/components/schemas/Page'
-        components:
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/Component'
+            type: string
       required:
-      - page
-      - components
+      - errors
+    Page:
+      type: object
+      description: Identity of the Utilita status page the response came from.
+      properties:
+        id:
+          type: string
+          description: Statuspage page identifier.
+          example: lgm23svnh0xr
+        name:
+          type: string
+          example: Utilita Status Page
+        url:
+          type: string
+          format: uri
+          example: https://status.utilita.co.uk
+        time_zone:
+          type: string
+          example: Europe/London
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - name
+      - url
+      - updated_at
     Component:
       type: object
       description: A single Utilita service tracked on the status page.
@@ -114,42 +138,18 @@ components:
       - id
       - name
       - status
-    Page:
+    ComponentsResponse:
       type: object
-      description: Identity of the Utilita status page the response came from.
       properties:
-        id:
-          type: string
-          description: Statuspage page identifier.
-          example: lgm23svnh0xr
-        name:
-          type: string
-          example: Utilita Status Page
-        url:
-          type: string
-          format: uri
-          example: https://status.utilita.co.uk
-        time_zone:
-          type: string
-          example: Europe/London
-        updated_at:
-          type: string
-          format: date-time
-      required:
-      - id
-      - name
-      - url
-      - updated_at
-    Error:
-      type: object
-      description: Error envelope observed on this API. Not RFC 9457 problem+json — a plain JSON object with an `errors` array of human-readable strings, served as application/json.
-      properties:
-        errors:
+        page:
+          $ref: '#/components/schemas/Page'
+        components:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/Component'
       required:
-      - errors
+      - page
+      - components
   responses:
     NotFound:
       description: The requested resource could not be found.
