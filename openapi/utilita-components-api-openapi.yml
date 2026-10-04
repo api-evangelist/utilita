@@ -48,16 +48,6 @@ paths:
         example: examples/utilita-status-components.json
 components:
   schemas:
-    Error:
-      type: object
-      description: Error envelope observed on this API. Not RFC 9457 problem+json — a plain JSON object with an `errors` array of human-readable strings, served as application/json.
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-      required:
-      - errors
     Page:
       type: object
       description: Identity of the Utilita status page the response came from.
@@ -84,6 +74,28 @@ components:
       - name
       - url
       - updated_at
+    Error:
+      type: object
+      description: Error envelope observed on this API. Not RFC 9457 problem+json — a plain JSON object with an `errors` array of human-readable strings, served as application/json.
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+      required:
+      - errors
+    ComponentsResponse:
+      type: object
+      properties:
+        page:
+          $ref: '#/components/schemas/Page'
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/Component'
+      required:
+      - page
+      - components
     Component:
       type: object
       description: A single Utilita service tracked on the status page.
@@ -138,18 +150,6 @@ components:
       - id
       - name
       - status
-    ComponentsResponse:
-      type: object
-      properties:
-        page:
-          $ref: '#/components/schemas/Page'
-        components:
-          type: array
-          items:
-            $ref: '#/components/schemas/Component'
-      required:
-      - page
-      - components
   responses:
     NotFound:
       description: The requested resource could not be found.

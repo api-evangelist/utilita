@@ -71,119 +71,120 @@ paths:
         example: examples/utilita-status-status.json
 components:
   schemas:
-    Error:
+    IncidentUpdate:
       type: object
-      description: Error envelope observed on this API. Not RFC 9457 problem+json — a plain JSON object with an `errors` array of human-readable strings, served as application/json.
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-      required:
-      - errors
-    AffectedComponent:
-      type: object
-      description: A component touched by an incident update, with its status transition.
-      properties:
-        code:
-          type: string
-          description: Component id.
-        name:
-          type: string
-        old_status:
-          type: string
-        new_status:
-          type: string
-    Page:
-      type: object
-      description: Identity of the Utilita status page the response came from.
+      description: One entry in an incident's update timeline.
       properties:
         id:
           type: string
-          description: Statuspage page identifier.
-          example: lgm23svnh0xr
-        name:
-          type: string
-          example: Utilita Status Page
-        url:
-          type: string
-          format: uri
-          example: https://status.utilita.co.uk
-        time_zone:
-          type: string
-          example: Europe/London
-        updated_at:
-          type: string
-          format: date-time
-      required:
-      - id
-      - name
-      - url
-      - updated_at
-    StatusResponse:
-      type: object
-      properties:
-        page:
-          $ref: '#/components/schemas/Page'
-        status:
-          $ref: '#/components/schemas/StatusIndicator'
-      required:
-      - page
-      - status
-    Component:
-      type: object
-      description: A single Utilita service tracked on the status page.
-      properties:
-        id:
-          type: string
-          example: y54fk6gsgfjr
-        name:
-          type: string
-          example: SMETS1 Smart Meters
-        description:
-          type:
-          - string
-          - 'null'
         status:
           type: string
           enum:
-          - operational
-          - degraded_performance
-          - partial_outage
-          - major_outage
-          - under_maintenance
-          example: operational
+          - investigating
+          - identified
+          - monitoring
+          - resolved
+          - postmortem
+          - scheduled
+          - in_progress
+          - verifying
+          - completed
+        body:
+          type: string
+        incident_id:
+          type: string
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
-        position:
-          type: integer
+        display_at:
+          type: string
+          format: date-time
+        affected_components:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AffectedComponent'
+        deliver_notifications:
+          type: boolean
+        custom_tweet:
+          type:
+          - string
+          - 'null'
+        tweet_id:
+          type:
+          - string
+          - 'null'
+      required:
+      - id
+      - status
+      - body
+      - incident_id
+    Incident:
+      type: object
+      description: An unplanned service incident.
+      properties:
+        id:
+          type: string
+          example: z7l2g8m2n80d
+        name:
+          type: string
+          example: Card Payments Authorisation Issue
+        status:
+          type: string
+          enum:
+          - investigating
+          - identified
+          - monitoring
+          - resolved
+          - postmortem
+        impact:
+          type: string
+          enum:
+          - none
+          - minor
+          - major
+          - critical
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        monitoring_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        resolved_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        started_at:
+          type: string
+          format: date-time
+        shortlink:
+          type: string
+          format: uri
         page_id:
           type: string
-        group:
-          type: boolean
-          description: True when this component is a group containing other components.
-        group_id:
-          type:
-          - string
-          - 'null'
-          description: Identifier of the parent group component, when this component belongs to one.
-        only_show_if_degraded:
-          type: boolean
-        showcase:
-          type: boolean
-        start_date:
-          type:
-          - string
-          - 'null'
-          format: date
+        incident_updates:
+          type: array
+          items:
+            $ref: '#/components/schemas/IncidentUpdate'
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/Component'
       required:
       - id
       - name
       - status
+      - impact
     ScheduledMaintenance:
       type: object
       description: A planned maintenance window.
@@ -271,68 +272,16 @@ components:
       required:
       - indicator
       - description
-    Incident:
+    StatusResponse:
       type: object
-      description: An unplanned service incident.
       properties:
-        id:
-          type: string
-          example: z7l2g8m2n80d
-        name:
-          type: string
-          example: Card Payments Authorisation Issue
+        page:
+          $ref: '#/components/schemas/Page'
         status:
-          type: string
-          enum:
-          - investigating
-          - identified
-          - monitoring
-          - resolved
-          - postmortem
-        impact:
-          type: string
-          enum:
-          - none
-          - minor
-          - major
-          - critical
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        monitoring_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        resolved_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        started_at:
-          type: string
-          format: date-time
-        shortlink:
-          type: string
-          format: uri
-        page_id:
-          type: string
-        incident_updates:
-          type: array
-          items:
-            $ref: '#/components/schemas/IncidentUpdate'
-        components:
-          type: array
-          items:
-            $ref: '#/components/schemas/Component'
+          $ref: '#/components/schemas/StatusIndicator'
       required:
-      - id
-      - name
+      - page
       - status
-      - impact
     Summary:
       type: object
       properties:
@@ -358,58 +307,109 @@ components:
       - components
       - incidents
       - scheduled_maintenances
-    IncidentUpdate:
+    Error:
       type: object
-      description: One entry in an incident's update timeline.
+      description: Error envelope observed on this API. Not RFC 9457 problem+json — a plain JSON object with an `errors` array of human-readable strings, served as application/json.
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+      required:
+      - errors
+    Page:
+      type: object
+      description: Identity of the Utilita status page the response came from.
       properties:
         id:
           type: string
+          description: Statuspage page identifier.
+          example: lgm23svnh0xr
+        name:
+          type: string
+          example: Utilita Status Page
+        url:
+          type: string
+          format: uri
+          example: https://status.utilita.co.uk
+        time_zone:
+          type: string
+          example: Europe/London
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - name
+      - url
+      - updated_at
+    Component:
+      type: object
+      description: A single Utilita service tracked on the status page.
+      properties:
+        id:
+          type: string
+          example: y54fk6gsgfjr
+        name:
+          type: string
+          example: SMETS1 Smart Meters
+        description:
+          type:
+          - string
+          - 'null'
         status:
           type: string
           enum:
-          - investigating
-          - identified
-          - monitoring
-          - resolved
-          - postmortem
-          - scheduled
-          - in_progress
-          - verifying
-          - completed
-        body:
-          type: string
-        incident_id:
-          type: string
+          - operational
+          - degraded_performance
+          - partial_outage
+          - major_outage
+          - under_maintenance
+          example: operational
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
-        display_at:
+        position:
+          type: integer
+        page_id:
           type: string
-          format: date-time
-        affected_components:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/AffectedComponent'
-        deliver_notifications:
+        group:
           type: boolean
-        custom_tweet:
+          description: True when this component is a group containing other components.
+        group_id:
           type:
           - string
           - 'null'
-        tweet_id:
+          description: Identifier of the parent group component, when this component belongs to one.
+        only_show_if_degraded:
+          type: boolean
+        showcase:
+          type: boolean
+        start_date:
           type:
           - string
           - 'null'
+          format: date
       required:
       - id
+      - name
       - status
-      - body
-      - incident_id
+    AffectedComponent:
+      type: object
+      description: A component touched by an incident update, with its status transition.
+      properties:
+        code:
+          type: string
+          description: Component id.
+        name:
+          type: string
+        old_status:
+          type: string
+        new_status:
+          type: string
   responses:
     NotFound:
       description: The requested resource could not be found.

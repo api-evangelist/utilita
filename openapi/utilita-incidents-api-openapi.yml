@@ -72,109 +72,6 @@ paths:
         example: examples/utilita-status-unresolved-incidents.json
 components:
   schemas:
-    Error:
-      type: object
-      description: Error envelope observed on this API. Not RFC 9457 problem+json — a plain JSON object with an `errors` array of human-readable strings, served as application/json.
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-      required:
-      - errors
-    AffectedComponent:
-      type: object
-      description: A component touched by an incident update, with its status transition.
-      properties:
-        code:
-          type: string
-          description: Component id.
-        name:
-          type: string
-        old_status:
-          type: string
-        new_status:
-          type: string
-    Page:
-      type: object
-      description: Identity of the Utilita status page the response came from.
-      properties:
-        id:
-          type: string
-          description: Statuspage page identifier.
-          example: lgm23svnh0xr
-        name:
-          type: string
-          example: Utilita Status Page
-        url:
-          type: string
-          format: uri
-          example: https://status.utilita.co.uk
-        time_zone:
-          type: string
-          example: Europe/London
-        updated_at:
-          type: string
-          format: date-time
-      required:
-      - id
-      - name
-      - url
-      - updated_at
-    Component:
-      type: object
-      description: A single Utilita service tracked on the status page.
-      properties:
-        id:
-          type: string
-          example: y54fk6gsgfjr
-        name:
-          type: string
-          example: SMETS1 Smart Meters
-        description:
-          type:
-          - string
-          - 'null'
-        status:
-          type: string
-          enum:
-          - operational
-          - degraded_performance
-          - partial_outage
-          - major_outage
-          - under_maintenance
-          example: operational
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        position:
-          type: integer
-        page_id:
-          type: string
-        group:
-          type: boolean
-          description: True when this component is a group containing other components.
-        group_id:
-          type:
-          - string
-          - 'null'
-          description: Identifier of the parent group component, when this component belongs to one.
-        only_show_if_degraded:
-          type: boolean
-        showcase:
-          type: boolean
-        start_date:
-          type:
-          - string
-          - 'null'
-          format: date
-      required:
-      - id
-      - name
-      - status
     Incident:
       type: object
       description: An unplanned service incident.
@@ -301,6 +198,109 @@ components:
       - status
       - body
       - incident_id
+    Error:
+      type: object
+      description: Error envelope observed on this API. Not RFC 9457 problem+json — a plain JSON object with an `errors` array of human-readable strings, served as application/json.
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+      required:
+      - errors
+    Page:
+      type: object
+      description: Identity of the Utilita status page the response came from.
+      properties:
+        id:
+          type: string
+          description: Statuspage page identifier.
+          example: lgm23svnh0xr
+        name:
+          type: string
+          example: Utilita Status Page
+        url:
+          type: string
+          format: uri
+          example: https://status.utilita.co.uk
+        time_zone:
+          type: string
+          example: Europe/London
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - name
+      - url
+      - updated_at
+    AffectedComponent:
+      type: object
+      description: A component touched by an incident update, with its status transition.
+      properties:
+        code:
+          type: string
+          description: Component id.
+        name:
+          type: string
+        old_status:
+          type: string
+        new_status:
+          type: string
+    Component:
+      type: object
+      description: A single Utilita service tracked on the status page.
+      properties:
+        id:
+          type: string
+          example: y54fk6gsgfjr
+        name:
+          type: string
+          example: SMETS1 Smart Meters
+        description:
+          type:
+          - string
+          - 'null'
+        status:
+          type: string
+          enum:
+          - operational
+          - degraded_performance
+          - partial_outage
+          - major_outage
+          - under_maintenance
+          example: operational
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        position:
+          type: integer
+        page_id:
+          type: string
+        group:
+          type: boolean
+          description: True when this component is a group containing other components.
+        group_id:
+          type:
+          - string
+          - 'null'
+          description: Identifier of the parent group component, when this component belongs to one.
+        only_show_if_degraded:
+          type: boolean
+        showcase:
+          type: boolean
+        start_date:
+          type:
+          - string
+          - 'null'
+          format: date
+      required:
+      - id
+      - name
+      - status
   responses:
     NotFound:
       description: The requested resource could not be found.

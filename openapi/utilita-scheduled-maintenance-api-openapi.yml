@@ -94,67 +94,58 @@ paths:
         example: examples/utilita-status-active-maintenances.json
 components:
   schemas:
-    Error:
+    IncidentUpdate:
       type: object
-      description: Error envelope observed on this API. Not RFC 9457 problem+json — a plain JSON object with an `errors` array of human-readable strings, served as application/json.
-      properties:
-        errors:
-          type: array
-          items:
-            type: string
-      required:
-      - errors
-    ScheduledMaintenancesResponse:
-      type: object
-      properties:
-        page:
-          $ref: '#/components/schemas/Page'
-        scheduled_maintenances:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScheduledMaintenance'
-      required:
-      - page
-      - scheduled_maintenances
-    AffectedComponent:
-      type: object
-      description: A component touched by an incident update, with its status transition.
-      properties:
-        code:
-          type: string
-          description: Component id.
-        name:
-          type: string
-        old_status:
-          type: string
-        new_status:
-          type: string
-    Page:
-      type: object
-      description: Identity of the Utilita status page the response came from.
+      description: One entry in an incident's update timeline.
       properties:
         id:
           type: string
-          description: Statuspage page identifier.
-          example: lgm23svnh0xr
-        name:
+        status:
           type: string
-          example: Utilita Status Page
-        url:
+          enum:
+          - investigating
+          - identified
+          - monitoring
+          - resolved
+          - postmortem
+          - scheduled
+          - in_progress
+          - verifying
+          - completed
+        body:
           type: string
-          format: uri
-          example: https://status.utilita.co.uk
-        time_zone:
+        incident_id:
           type: string
-          example: Europe/London
+        created_at:
+          type: string
+          format: date-time
         updated_at:
           type: string
           format: date-time
+        display_at:
+          type: string
+          format: date-time
+        affected_components:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AffectedComponent'
+        deliver_notifications:
+          type: boolean
+        custom_tweet:
+          type:
+          - string
+          - 'null'
+        tweet_id:
+          type:
+          - string
+          - 'null'
       required:
       - id
-      - name
-      - url
-      - updated_at
+      - status
+      - body
+      - incident_id
     ScheduledMaintenance:
       type: object
       description: A planned maintenance window.
@@ -222,6 +213,67 @@ components:
       - status
       - scheduled_for
       - scheduled_until
+    ScheduledMaintenancesResponse:
+      type: object
+      properties:
+        page:
+          $ref: '#/components/schemas/Page'
+        scheduled_maintenances:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduledMaintenance'
+      required:
+      - page
+      - scheduled_maintenances
+    Error:
+      type: object
+      description: Error envelope observed on this API. Not RFC 9457 problem+json — a plain JSON object with an `errors` array of human-readable strings, served as application/json.
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+      required:
+      - errors
+    Page:
+      type: object
+      description: Identity of the Utilita status page the response came from.
+      properties:
+        id:
+          type: string
+          description: Statuspage page identifier.
+          example: lgm23svnh0xr
+        name:
+          type: string
+          example: Utilita Status Page
+        url:
+          type: string
+          format: uri
+          example: https://status.utilita.co.uk
+        time_zone:
+          type: string
+          example: Europe/London
+        updated_at:
+          type: string
+          format: date-time
+      required:
+      - id
+      - name
+      - url
+      - updated_at
+    AffectedComponent:
+      type: object
+      description: A component touched by an incident update, with its status transition.
+      properties:
+        code:
+          type: string
+          description: Component id.
+        name:
+          type: string
+        old_status:
+          type: string
+        new_status:
+          type: string
     Component:
       type: object
       description: A single Utilita service tracked on the status page.
@@ -276,58 +328,6 @@ components:
       - id
       - name
       - status
-    IncidentUpdate:
-      type: object
-      description: One entry in an incident's update timeline.
-      properties:
-        id:
-          type: string
-        status:
-          type: string
-          enum:
-          - investigating
-          - identified
-          - monitoring
-          - resolved
-          - postmortem
-          - scheduled
-          - in_progress
-          - verifying
-          - completed
-        body:
-          type: string
-        incident_id:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        display_at:
-          type: string
-          format: date-time
-        affected_components:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/AffectedComponent'
-        deliver_notifications:
-          type: boolean
-        custom_tweet:
-          type:
-          - string
-          - 'null'
-        tweet_id:
-          type:
-          - string
-          - 'null'
-      required:
-      - id
-      - status
-      - body
-      - incident_id
   responses:
     NotFound:
       description: The requested resource could not be found.
